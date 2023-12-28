@@ -48,16 +48,8 @@ public class EmployeeDaoJDBC implements EmployeeDao {
             st.setInt(1,id);
             rs = st.executeQuery();
             if (rs.next()){
-                Department dep = new Department();
-                dep.setId(rs.getInt("DepartmentId"));
-                dep.setName(rs.getString("DepName"));
-                Employee obj = new Employee();
-                obj.setId(rs.getInt("Id"));
-                obj.setName(rs.getString("Name"));
-                obj.setEmail(rs.getString("Email"));
-                obj.setBirthDate(rs.getDate("BirthDate"));
-                obj.setBaseSalary(rs.getDouble("BaseSalary"));
-                obj.setDepartment(dep);
+                Department dep = instantiateDepartment(rs);
+                Employee obj = instantiateEmployee(rs,dep);
                 return obj;
             }
             return null;
@@ -69,8 +61,26 @@ public class EmployeeDaoJDBC implements EmployeeDao {
         }
     }
 
+    private Employee instantiateEmployee(ResultSet rs, Department dep) throws SQLException {
+        Employee obj = new Employee();
+        obj.setId(rs.getInt("Id"));
+        obj.setName(rs.getString("Name"));
+        obj.setEmail(rs.getString("Email"));
+        obj.setBirthDate(rs.getDate("BirthDate"));
+        obj.setBaseSalary(rs.getDouble("BaseSalary"));
+        obj.setDepartment(dep);
+        return obj;
+    }
+
     @Override
     public List<Employee> findAll() {
         return null;
+    }
+
+    private Department instantiateDepartment(ResultSet rs) throws SQLException {
+        Department dep = new Department();
+        dep.setId(rs.getInt("DepartmentId"));
+        dep.setName(rs.getString("DepName"));
+        return dep;
     }
 }
