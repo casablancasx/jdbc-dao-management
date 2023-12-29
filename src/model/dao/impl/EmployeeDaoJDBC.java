@@ -32,7 +32,14 @@ public class EmployeeDaoJDBC implements EmployeeDao {
 
     @Override
     public void deleteById(Integer id) {
-
+        PreparedStatement st = null;
+        try{
+            st = connection.prepareStatement("DELETE FROM employee WHERE Id = ?");
+            st.setInt(1,id);
+            st.executeUpdate();
+        }catch (SQLException e){
+            throw new DbException(e.getMessage());
+        }
     }
 
     @Override

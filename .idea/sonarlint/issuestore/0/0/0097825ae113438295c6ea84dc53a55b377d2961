@@ -1,9 +1,7 @@
 
 }
-java:S14884"[Immediately return this expression instead of assigning it to the temporary variable "obj".(ÂÛ¨»şÿÿÿÿ8ÉµíË1
+java:S1488;"[Immediately return this expression instead of assigning it to the temporary variable "obj".(ÂÛ¨»şÿÿÿÿ8¦’Š¾Ë1
 
-java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ºŒüÊ8ÌµíË1
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ºŒüÊ8¦’Š¾Ë1
 £
-java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ÏÀŒ³ùÿÿÿÿ8ÌµíË1
-
-java:S1186""€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ïàš8ÍµíË1
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ÏÀŒ³ùÿÿÿÿ8¦’Š¾Ë1
