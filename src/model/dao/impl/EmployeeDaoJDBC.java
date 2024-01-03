@@ -7,11 +7,11 @@ import model.dao.EmployeeDao;
 import model.entities.Department;
 import model.entities.Employee;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EmployeeDaoJDBC implements EmployeeDao {
     private Connection connection;
@@ -21,13 +21,47 @@ public class EmployeeDaoJDBC implements EmployeeDao {
 
     @Override
     public void insert(Employee obj) {
+        PreparedStatement st = null;
+        try{
+            st = connection.prepareStatement(
+                    "INSERT INTO employee " +
+                    "(Name, Email, BirthDate, BaseSalary, DepartmentId) " +
+                    "VALUES " +
+                    "(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
+            st.setString(1,obj.getName());
+            st.setString(2,obj.getEmail());
+            st.setDate(3,new java.sql.Date(obj.getBirthDate().getTime()));
+            st.setDouble(4,obj.getBaseSalary());
+            st.setInt(5,obj.getDepartment().getId());
 
+            st.executeUpdate();
+        }catch (SQLException e){
+            throw new DbException(e.getMessage());
+        }finally {
+            DB.closeStatement(st);
+        }
     }
 
     @Override
     public void update(Employee obj) {
-
+        PreparedStatement st = null;
+        try{
+            st = connection.prepareStatement(
+                    "UPDATE employee " +
+                    "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? " +
+                    "WHERE Id = ?" );
+            st.setString(1,obj.getName());
+            st.setString(2,obj.getEmail());
+            st.setDate(3,new java.sql.Date(obj.getBirthDate().getTime()));
+            st.setDouble(4,obj.getBaseSalary());
+            st.setInt(5,obj.getDepartment().getId());
+            st.executeUpdate();
+        }catch (SQLException e){
+            throw new DbException(e.getMessage());
+        }finally {
+            DB.closeStatement(st);
+        }
     }
 
     @Override
@@ -81,7 +115,34 @@ public class EmployeeDaoJDBC implements EmployeeDao {
 
     @Override
     public List<Employee> findAll() {
-        return null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try{
+            st = connection.prepareStatement(
+                    "SELECT employee.*,department.Name as DepName " +
+                    "FROM employee INNER JOIN department " +
+                    "ON employee.DepartmentId = department.Id " +
+                    "ORDER BY Name");
+
+            rs = st.executeQuery();
+            List<Employee> list = new ArrayList<>();
+            Map<Integer,Department> map = new HashMap<>();
+            while (rs.next()){
+                Department dep = map.get(rs.getInt("DeparmeentId"));
+                if (dep == null){
+                    Department department = instantiateDepartment(rs);
+                    map.put(rs.getInt("DepartmentId"),department);
+                }
+                Employee employee = instantiateEmployee(rs,dep);
+            }
+        return list;
+
+        }catch (SQLException e){
+            throw new DbException(e.getMessage());
+        }finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     private Department instantiateDepartment(ResultSet rs) throws SQLException {
